@@ -93,12 +93,23 @@ public class Machine{
     }
 
     public boolean isValid(CharSequence word){
-        return finalStates.contains(run(word).getLast());
+        State current = initialState;
+        for(Character symbol :word.toString().toCharArray())
+            current = transitionFunction.queryNextState(current, symbol);
+
+        return finalStates.contains(current);
+    }
+    
+    /*
+     * Tries to minimize the machine. Reducing the quantity of states.
+     * */
+    public boolean minimize(){
+        return false;
     }
 
     @Override
     public String toString(){
-        return "Machine[\n\tinternalStates=%s,\n\tinputAlphabet=%s,\n\ttransitionFunction =%s,\n\tinitialState=%s,\n\tfinalStates=%s]".formatted(
+        return "Machine[\n\tinternalStates=%s,\n\tinputAlphabet=%s,\n\ttransitionFunction=%s,\n\tinitialState=%s,\n\tfinalStates=%s]".formatted(
                 internalStates,
                 inputAlphabet,
                 transitionFunction,
@@ -107,3 +118,4 @@ public class Machine{
         );
     }
 }
+
