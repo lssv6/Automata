@@ -92,6 +92,10 @@ public class Machine{
         return states;
     }
 
+    public boolean isValid(CharSequence word){
+        return finalStates.contains(run(word).getLast());
+    }
+
     @Override
     public String toString(){
         return "Machine[\n\tinternalStates=%s,\n\tinputAlphabet=%s,\n\ttransitionFunction =%s,\n\tinitialState=%s,\n\tfinalStates=%s]".formatted(
