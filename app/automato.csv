@@ -1,0 +1,18 @@
+# Linhas que começam com jogo da velha são comentários. Espaço em branco anterior não caracteriza comentário.,,
+"# Para descrever um autômato na minha linguagem que extende o CSV,",,
+# você precisa apenas descrever a função de transição pois o resto irá ser descoberto automaticamente,,
+"# Estados em branco são redirecionados para um estado E, global e absorvente. Ele representa um estado não final.",,
+"# Para declarar uma função de transição, deve se escrever “FUNTRANS”",,
+"# Neste autômato, são reconhecidas as palavras que têm aba como prefixo e bbb como subprefixo",,
+FUNTRANS,a,b
+q0,q1,
+q1,,q2
+q2,q3,
+q3,q3,q4
+#Você pode colocar comentários em qualquer linha. Mas tem que ser na primeira coluna,,
+q4,q3,q5
+q5,q3,q6
+q6,q6,q6
+# Observe que a ordem das linhas não importa.,,
+FINAIS,q6,
+INICIAL,q0,
