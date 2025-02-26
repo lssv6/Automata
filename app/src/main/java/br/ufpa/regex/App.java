@@ -12,7 +12,7 @@ public class App {
         try(FileReader reader = new FileReader(args[0])){
             Machine m = MachineParser.parseFromCSV(reader);
             System.out.println(m);
-            System.out.println(m.isValid("ababbaabb"));
+            System.out.println(m.validate("ababbaabb"));
         }catch(IOException exception){
             exception.printStackTrace();
         }

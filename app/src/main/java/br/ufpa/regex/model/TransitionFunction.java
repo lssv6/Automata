@@ -21,14 +21,28 @@ public class TransitionFunction{
         public State getFrom(){return from;}
         public State getTo(){return to;}
         public Character getSymbol(){return symbol;}
+
         @Override
         public String toString(){
             return "[%s --%c--> %s]".formatted(from, symbol, to);
         }
+        
+        @Override
+        public boolean equals(Object other){
+            TFEntry tfe = (TFEntry) other;
+            return (
+                from.equals(tfe.from) &&
+                to.equals(tfe.to) &&
+                symbol.equals(tfe.symbol)
+            );
+        }
     }
+
     public TransitionFunction(){
         entries = new HashSet<>(0);
     }
+
+    public Set<TFEntry> getEntries(){return entries;}
 
     public void boundState(State from, State to, Character symbol){
         entries.add(new TFEntry(from, to, symbol));
