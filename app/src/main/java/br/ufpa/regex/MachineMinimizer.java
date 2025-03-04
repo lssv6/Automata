@@ -1,17 +1,33 @@
 package br.ufpa.regex;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+import org.apache.commons.collections4.SetUtils;
+
 import br.ufpa.regex.model.State;
 import br.ufpa.regex.model.DFAMachine;
 import br.ufpa.regex.model.TransitionFunction;
 
 // Class utilized in the minimation phase.
-class Partitions{
-    List<Set<State>> partitions;
+class Partition{
+    List<Set<State>> sets;
+    public Partition(){
+        this.sets = new ArrayList<>();
+    }
+    public Partition(List<Set<State>> sets){
+        this.sets = new ArrayList<>();
+        for(Set<State> set: sets){
+            this.sets.add(set);
+        }
+    }
 
+    public void add(Set<State> states){
+        sets.add(states);
+    }
 }
 
 public class MachineMinimizer{
@@ -57,21 +73,22 @@ public class MachineMinimizer{
     }
 
     private static Partition refinePartition(DFAMachine machine, Partition partition){
-        Partition p;
+        Partition partition2 = new Partition();
 
         for(State state: machine.getInternalStates()){
-            //Set<State> observationStates;
+            Set<State> observationStates;
             for(Character symbol: machine.getInputAlphabet()){
-                observationStates.add()
+                observationStates.add();
             }
+            observationStates
         }
-        }
+        return refinePartition(machine, partition2);
     }
 
     public static DFAMachine minimize(DFAMachine machine){
         DFAMachine unreachableStatesRemovedMachine = removeUnreachableStates(machine);
-        Set<State> nonFinalStates = unreachableStatesRemovedMachine.getInternalStates
-        Partition p = refinePartition(unreachableStatesRemovedMachine, new Partitions()
+        Set<State> nonFinalStatess = SetUtils.difference(unreachableStatesRemovedMachine.getInternalStates(), unreachableStatesRemovedMachine.getFinalStates()).toSet();
+        Partition p = refinePartition(unreachableStatesRemovedMachine, new Partitions());
         return machine;
     }
 }

@@ -10,6 +10,7 @@ import java.util.Set;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVRecord;
 
+import br.ufpa.regex.model.DFAMachine;
 import br.ufpa.regex.model.Machine;
 import br.ufpa.regex.model.State;
 
@@ -21,6 +22,7 @@ public class MachineParser{
         State initialState = State.ERROR;
         Set<State> finalStates = null;
         List<String> alphabet = null;
+
         for(CSVRecord record: records){
             List<String> strings = record.toList();
             // Skip comment, early return!
@@ -55,7 +57,7 @@ public class MachineParser{
             throw new IOException("Error while parsing machine");
         }
 
-        Machine.Builder machineBuilder = Machine.builder(initialState);
+        DFAMachine.Builder machineBuilder = DFAMachine.builder(initialState);
         // Now this for is more readable.
         for(List<String> strings: transitionFunctionEntries){
             System.out.println(strings);
