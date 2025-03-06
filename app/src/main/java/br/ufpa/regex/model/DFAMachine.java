@@ -4,10 +4,12 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import br.ufpa.regex.model.TransitionFunction.TFEntry;
 
-public class DFAMachine extends Machine{
+
+public class DFAMachine extends Machine implements Cloneable{
     public static class Builder{
         private DFAMachine machine;
         private Builder(State initialState){
@@ -64,7 +66,6 @@ public class DFAMachine extends Machine{
         return new Builder();
     }
 
-
     public List<State> run(CharSequence word){
         List<State> states = new ArrayList<State>();
         State current = initialState;
@@ -76,6 +77,30 @@ public class DFAMachine extends Machine{
         return states;
     }
 
+    @Override
+    public DFAMachine clone(){
+        DFAMachine.Builder builder = DFAMachine.builder(initialState.clone());
+        Set<State> finalStatesClone = new HashSet<>();
+        for(TFEntry entry: transitionFunction.getEntries()){
+            State from = entry.getFrom();
+            State to = entry.getTo();
+            Character symbol = entry.getSymbol();
+            
+            State fromClone = from.clone();
+            State toClone = to.clone();
+            builder.boundState(fromClone, toClone, symbol);
+
+            if(finalStates.contains(fromClone)){
+                finalStatesClone.add(fromClone);
+            }
+
+            if(finalStates.contains(toClone)){
+                finalStatesClone.add(toClone);
+            }
+        }
+        builder.addFinalStates(finalStatesClone);
+        return builder.build();
+    }
     @Override
     public boolean validate(CharSequence word){
         State current = initialState;

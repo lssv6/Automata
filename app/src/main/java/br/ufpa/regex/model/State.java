@@ -1,6 +1,6 @@
 package br.ufpa.regex.model;
 
-public class State{
+public class State implements Cloneable{
     private String name;
 
     public static final State ERROR = new State("E");
@@ -32,6 +32,11 @@ public class State{
     @Override
     public String toString(){
         return "{%s}".formatted(name);
+    }
+
+    @Override
+    public State clone(){
+        return State.fromString(name);
     }
 }
 

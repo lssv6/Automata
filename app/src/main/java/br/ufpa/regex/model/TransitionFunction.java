@@ -3,12 +3,12 @@ package br.ufpa.regex.model;
 import java.util.HashSet;
 import java.util.Set;
 
-public class TransitionFunction{
+public class TransitionFunction implements Cloneable{
     private Set<TFEntry> entries;
     /**
      * This class shouldn't be instanciated outside ThransitionFunction
      * */
-    public class TFEntry{
+    public class TFEntry implements Cloneable{
         private State from;
         private State to;
         private Character symbol;
@@ -57,6 +57,7 @@ public class TransitionFunction{
             }
         return state;
     }
+
     @Override
     public String toString(){
         return "TransitionFunction[entries=%s]".formatted(entries);

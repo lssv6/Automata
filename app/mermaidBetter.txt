@@ -1,0 +1,10 @@
+stateDiagram-v2
+    direction LR
+    [*]  --> q0
+    classDef final fill: pink,stroke-width:2px,stroke:yellow
+    q5:::final
+    q1q2:::final
+    q3q4 --> q5 : a, b
+    q5 --> q5 : a, b
+    q1q2 --> q3q4 : a, b
+    q0 --> q1q2 : a, b

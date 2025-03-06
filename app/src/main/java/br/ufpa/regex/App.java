@@ -1,44 +1,45 @@
 package br.ufpa.regex;
 
+import java.io.File;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 
-import br.ufpa.regex.model.Machine;
+import br.ufpa.regex.model.DFAMachine;
+import br.ufpa.regex.optimization.MachineOptimizer;
 import br.ufpa.regex.parser.MachineParser;
 
 public class App {
     public static void main(String[] args) {
         System.out.println(args[0]);
+        DFAMachine m = null;
         try(FileReader reader = new FileReader(args[0])){
-            Machine m = MachineParser.parseFromCSV(reader);
-            System.out.println(m);
-            System.out.println(m.validate("ababbaabb"));
+            m = (DFAMachine) MachineParser.parseFromCSV(reader);
+
         }catch(IOException exception){
             exception.printStackTrace();
         }
+        if(m == null){
+            return;
+        }
+        DFAMachine m2 = MachineOptimizer.optimize(m);
+        try(FileWriter fileWriter = new FileWriter(new File("better.csv"));){
+            MachineParser.writeToCSV(m2, fileWriter);
+        }catch(IOException ioException){
+            ioException.printStackTrace();
+        }
 
-        // If you wish to build a machine programmatically:
-        //Machine.Builder builder = Machine.builder(State.fromString("q0"));
+        try(FileWriter fileWriter = new FileWriter(new File("mermaidBetter.txt"));){
+            MachineParser.writeToMermaid(m2, fileWriter);
+        }catch(IOException ioException){
+            ioException.printStackTrace();
+        }
+        
+        try(FileWriter fileWriter = new FileWriter(new File("mermaidStd.txt"));){
+            MachineParser.writeToMermaid(m, fileWriter);
+        }catch(IOException ioException){
+            ioException.printStackTrace();
+        }
 
-        //builder.boundState("q0", "q1", 'a');
-        //builder.boundState("q0", State.ERROR_STRING, 'b');
-        //builder.boundState("q1", State.ERROR_STRING, 'a');
-        //builder.boundState("q1", "q2", 'b');
-        //builder.boundState("q2", "q3", 'a');
-        //builder.boundState("q2", State.ERROR_STRING, 'b');
-        //builder.boundState("q3", "q3", 'a');
-        //builder.boundState("q3", "q4", 'b');
-        //builder.boundState("q4", "q3", 'a');
-        //builder.boundState("q4", "q5", 'b');
-        //builder.boundState("q5", "q3", 'a');
-        //builder.boundState("q5", "q6", 'b');
-        //builder.boundState("q6", "q6", 'a');
-        //builder.boundState("q6", "q6", 'b');
-        //builder.boundState(State.ERROR_STRING, State.ERROR_STRING, 'a');
-        //builder.boundState(State.ERROR_STRING, State.ERROR_STRING, 'b');
-        //
-        //
-        //Machine machine = builder.build();
-        //System.out.println(machine.run(args[0]));
     }
 }
