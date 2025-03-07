@@ -22,12 +22,15 @@ public class MachineOptimizer{
 
     public static DFAMachine optimize(DFAMachine dfaMachine){
         dfaMachine = dfaMachine.clone();
+
         Set<State> states = dfaMachine.getInternalStates();
         int numberOfStates = states.size();
         State[] stateArray = states.toArray(new State[numberOfStates]);
-        
+
+        // Construir a tabela de todos os pares de estados possíveis enquanto marca os pares triviais.
         Set<UnorderedPair<State>> unorderedPairs = new HashSet<>();
         Set<UnorderedPair<State>> markedPairs = new HashSet<>();
+        // Conjunto de estados finais. (Ser utilizado para consulta).
         Set<State> fStates = dfaMachine.getFinalStates();
         for(int i = 0; i < numberOfStates - 1; i++){
             for(int j = i + 1; j < numberOfStates; j++){
@@ -37,7 +40,7 @@ public class MachineOptimizer{
                 UnorderedPair<State> pair = new UnorderedPair<State>(a, b);
                 unorderedPairs.add(pair);
 
-                // Mark trivial(obviously non optimizable) states soon.
+                // Marcar par trivial.
                 if(fStates.contains(a) != fStates.contains(b)){
                     System.out.printf("Marking trivial pair = %s\n", pair);
                     markedPairs.add(pair);
@@ -45,60 +48,83 @@ public class MachineOptimizer{
 
             }
         }
+
+
+        // Marcar os pares de estados trivialmente não equivalentes; 
         TransitionFunction transitionFunction = dfaMachine.getTransitionFunction();
         boolean isOptimized = false;
         while(!isOptimized){
             isOptimized = true;
+            // Para cada par de estados
             for(UnorderedPair<State> statePair : unorderedPairs){
-                // If the statePair is not marked then marks if suitable.
+                // Se o par de estados não está marcado
                 if(!markedPairs.contains(statePair)){
                     State a = statePair.getA();
                     State b = statePair.getB();
-                    
+                    // Pega os estados e siga-os
                     for(Character symbol: dfaMachine.getInputAlphabet()){
+                        // Pega os estados para onde eles vão.(consultando tabela de estados.)
                         State whereAGoes = transitionFunction.queryNextState(a, symbol);
                         State whereBGoes = transitionFunction.queryNextState(b, symbol);
                         UnorderedPair<State> goingTo = new UnorderedPair<State>(whereAGoes, whereBGoes);
+                        // Se os estados estão marcados.
                         if(markedPairs.contains(goingTo)){
+                            // Parece que vamos precisar rodar o loop while(!isOptimized) mais uma vez.
                             isOptimized = false;
+                            // Marque o par de estados.
                             markedPairs.add(statePair);
-                            System.out.printf("marking pair %s\n", statePair);
+                            System.out.printf("marking pair %s\n", statePair); // LOG
                         }
                     }
                 }
             }
         }
 
-        // CODE VERIFIED TIL THIS LINE TODO: Continue fixing from this line to the bottom.
-        // This is the set of equivalent states represented as pairs.
-        // Example: {|S1, S2|, |S4, S5|} in which S1 and S2 are equivalent.
+        // Esse é o conjunto de estados não marcados prontos para serem juntados.
+        // Exemplo: {|S1, S2|, |S4, S5|} em que S1 e S2 são equivalentes e S4 e S5 são equivalentes também.
+        // Juntar os estados equivalentes em um só, atualizando todas as referências necessárias.
         Set<UnorderedPair<State>> unmarkedPairs = SetUtils.difference(unorderedPairs, markedPairs).toSet();
         System.out.println(unmarkedPairs);
 
         Set<State> finalStates = dfaMachine.getFinalStates();
 
-        Map<State,State> newStatesMap = new HashMap<>();
+        Map<State,State> newStatesMap = new HashMap<>(); // Estado antigo, Estado novo
+        // Para cada par não ordenado.
         for(UnorderedPair<State> unorderedPair: unmarkedPairs){
+            // Pegue os estados deste par.
             State a = unorderedPair.getA();
             State b = unorderedPair.getB();
+
+            // Faça um estado novo.
             State newState = State.fromString(a.getName() + b.getName());
+            
+            // Caso algum deles seja final.
             if(finalStates.contains(a) || finalStates.contains(b)){
+                // Remova os estados antigos do conjunto de estados finais.
                 finalStates.remove(a);finalStates.remove(b);
+                // Adicione o novo.
                 finalStates.add(newState);
             }
+            // Adiciona os estados novos ao mapa de estados novos.
             newStatesMap.putIfAbsent(a, newState);
             newStatesMap.putIfAbsent(b, newState);
         }
 
+        // Criar nova função de transição.
         TransitionFunction transitionFunction2 = new TransitionFunction();
+
+        // Para cada entry da função de transição original
         for(TFEntry entry :transitionFunction.getEntries()){
+            // Pegue o estado novo se tiver. pegue o antigo se não tiver. 
             State from = newStatesMap.getOrDefault(entry.getFrom(), entry.getFrom());
             State to = newStatesMap.getOrDefault(entry.getTo(), entry.getTo());
             Character symbol = entry.getSymbol();
-
+            
+            // Registre o estado na função de transição.
             transitionFunction2.boundState(from, to, symbol);
         }
 
+        // Construa usando builder.
         DFAMachine.Builder builder = DFAMachine.builder(dfaMachine.getInitialState());
         builder.addFinalStates(finalStates);
         return builder.fromTransitionFunction(transitionFunction2).build();
