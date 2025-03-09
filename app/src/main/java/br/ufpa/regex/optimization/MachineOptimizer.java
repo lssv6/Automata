@@ -1,9 +1,7 @@
 package br.ufpa.regex.optimization;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
@@ -16,6 +14,7 @@ import br.ufpa.regex.model.TransitionFunction;
 import br.ufpa.regex.model.TransitionFunction.TFEntry;
 
 public class MachineOptimizer{
+
     public static State createMergedState(State a, State b){
         return State.fromString(a.getName() + b.getName());
     }
@@ -42,7 +41,7 @@ public class MachineOptimizer{
 
                 // Marcar par trivial.
                 if(fStates.contains(a) != fStates.contains(b)){
-                    System.out.printf("Marking trivial pair = %s\n", pair);
+                    //System.out.printf("Marking trivial pair = %s\n", pair);
                     markedPairs.add(pair);
                 }
 
@@ -73,7 +72,7 @@ public class MachineOptimizer{
                             isOptimized = false;
                             // Marque o par de estados.
                             markedPairs.add(statePair);
-                            System.out.printf("marking pair %s\n", statePair); // LOG
+                            //System.out.printf("marking pair %s\n", statePair); // LOG
                         }
                     }
                 }
@@ -84,7 +83,7 @@ public class MachineOptimizer{
         // Exemplo: {|S1, S2|, |S4, S5|} em que S1 e S2 são equivalentes e S4 e S5 são equivalentes também.
         // Juntar os estados equivalentes em um só, atualizando todas as referências necessárias.
         Set<UnorderedPair<State>> unmarkedPairs = SetUtils.difference(unorderedPairs, markedPairs).toSet();
-        System.out.println(unmarkedPairs);
+        // System.out.println(unmarkedPairs);
 
         Set<State> finalStates = dfaMachine.getFinalStates();
 
@@ -115,11 +114,12 @@ public class MachineOptimizer{
 
         // Para cada entry da função de transição original
         for(TFEntry entry :transitionFunction.getEntries()){
+
             // Pegue o estado novo se tiver. pegue o antigo se não tiver. 
             State from = newStatesMap.getOrDefault(entry.getFrom(), entry.getFrom());
             State to = newStatesMap.getOrDefault(entry.getTo(), entry.getTo());
             Character symbol = entry.getSymbol();
-            
+
             // Registre o estado na função de transição.
             transitionFunction2.boundState(from, to, symbol);
         }
@@ -169,7 +169,7 @@ class UnorderedPair<T>{
             response = false;
         }
         try{
-            @SuppressWarnings("unchecked")// Looks that this annotation is enough
+            @SuppressWarnings("unchecked")
             UnorderedPair<T> otherPair = (UnorderedPair<T>) other;
 
             response = (Objects.equals(a, otherPair.a) && Objects.equals(b, otherPair.b))

@@ -8,6 +8,7 @@
 plugins {
     // Apply the application plugin to add support for building a CLI application in Java.
     id 'application'
+    id "com.github.johnrengelman.shadow" version "8.1.1"
 }
 
 repositories {
@@ -31,6 +32,7 @@ dependencies {
     // This dependency is used by the application.
     implementation libs.guava
 }
+
 
 // Apply a specific Java toolchain to ease working on different environments.
 java {

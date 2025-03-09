@@ -2,15 +2,9 @@ stateDiagram-v2
     direction LR
     [*]  --> q0
     classDef final fill: pink,stroke-width:2px,stroke:yellow
-    q1:::final
     q5:::final
-    q2:::final
-    q1 --> q3 : a
-    q1 --> q4 : b
-    q2 --> q3 : b
-    q2 --> q4 : a
-    q3 --> q5 : a, b
-    q4 --> q5 : a, b
+    q1q2:::final
+    q3q4 --> q5 : a, b
     q5 --> q5 : a, b
-    q0 --> q1 : a
-    q0 --> q2 : b
+    q1q2 --> q3q4 : a, b
+    q0 --> q1q2 : a, b

@@ -140,10 +140,10 @@ public class MachineParser{
 
         DFAMachine.Builder machineBuilder = DFAMachine.builder(initialState);
         // Now this for is more readable.
-        System.out.println(initialState);
-        System.out.println(finalStates);
+        //System.out.println(initialState);
+        //System.out.println(finalStates);
         for(List<String> strings: transitionFunctionEntries){
-            System.out.println(strings);
+            //System.out.println(strings);
             State from = State.fromString(strings.getFirst());
             for(int i = 1; i < strings.size(); i++){
                 String stateString = strings.get(i);
