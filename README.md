@@ -46,7 +46,8 @@ stateDiagram-v2
 Em seu shell (CMD, PowerShell, bash, zsh, etc), digite o seguinte comando:
 
 ```
-$ java -jar automato.jar [FUNÇÃO DE TRANSIÇÃO] [PALAVRA]... ```
+$ java -jar automato.jar [FUNÇÃO DE TRANSIÇÃO] [PALAVRA]...
+```
 É esperado:
 
 FUNÇÃO DE TRANSIÇÃO --> Caminho da função de transição no formato CSV.
